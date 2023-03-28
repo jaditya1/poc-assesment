@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+    <title>POC</title>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="login-title">Log in</h2>
+      <form class="login-form">
+        <div>
+          <label for="username">Username </label>
+          <input id="username" type="text" name="username" required />
+        </div>
+
+        <div>
+          <label for="password">Password </label>
+          <input id="password" type="password" name="password" required />
+        </div>
+
+        <button class="btn btn--form" type="button" value="Log in" id="login_btn">
+          Log in
+        </button>
+      </form>
+    </div>
+  </body>
+
+
+<!-- login api integration -->
+<script src="{% static 'js/env.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+<script type="text/javascript">
+
+ $("#login_btn").click(function(){
+
+var req_data = {
+ username : $("#username").val(), 
+ password : $("#password").val()
+}
+if (req_data.username != "" && req_data.password != "")
+{
+  to_proceed = true
+}
+else
+{
+  to_proceed = false
+}
+
+if (to_proceed == true)
+{
+  $.ajax({
+  type: 'POST',
+  dataType:"json",
+  data : JSON.stringify(req_data),
+  url: base_url.base+'login_token',
+  headers:{  
+  },
+  success: function (data, status, xhr) {
+    localStorage.setItem('auth_token',data.token);
+    window.location.replace("/profile");
+  },
+
+  error: function(request, status, error) {
+          alert('Please provide valid credentials!');
+       }
+});
+}
+else
+{
+  alert("Please enter username and password both!!")
+}
+
+});
+
+
+
+</script>
+
+</html>

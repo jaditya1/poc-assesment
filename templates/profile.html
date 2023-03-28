@@ -1,0 +1,135 @@
+{% load static %}
+{% include "header.html" %} 
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- <link rel="stylesheet" href="{% static 'css/profile.css' %}" /> -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+  </head>
+  <body>
+
+    
+    <div class="container">
+  <h2><span class="glyphicon glyphicon-user"></span>&nbsp;Update Profile</h2>
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label class="control-label col-sm-2"><span class="glyphicon glyphicon-earphone"></span>&nbsp;Phone Number:</label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" id="phone_number" placeholder="Enter Mobile">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2"><span class="glyphicon glyphicon-home"></span>&nbsp;Address:</label>
+      <div class="col-sm-10">          
+        <input type="text" class="form-control" id="address" placeholder="Enter Address">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label class="control-label col-sm-2"><span class="glyphicon glyphicon-globe"></span>&nbsp;Lattitude</label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" id="lat" placeholder="Enter Latitude" step="0.01">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="control-label col-sm-2" ><span class="glyphicon glyphicon-globe"></span>&nbsp;Longitude</label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" id="long" placeholder="Enter Longitude" step="0.01">
+      </div>
+    </div>
+
+
+    <div class="form-group">        
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="button" class="btn btn-default" id="profile_update_btn">Submit</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+
+  </body>
+
+{% include "footer.html" %} 
+
+
+<script src="{% static 'js/env.js' %}"></script>
+<script type="text/javascript">
+
+
+  $.ajax({
+  type: 'GET',
+  dataType:"json",
+  url: base_url.base+'profile/',
+  headers:{  
+    "Authorization": "Bearer "+localStorage.getItem("auth_token")
+  },
+  success: function (data, status, xhr) {
+      $("#phone_number").val(data.phone_number)
+      $("#address").val(data.address)
+      $("#lat").val(data.latitude)
+      $("#long").val(data.longitute)
+
+  },
+
+  error: function(request, status, error) {
+          alert('Something went wrong!');
+          window.location.replace("/");
+       }
+});
+
+
+ $("#profile_update_btn").click(function(){
+
+var req_data = {
+ phone_number : $("#phone_number").val(), 
+ address : $("#address").val(),
+ latitude : $("#lat").val(), 
+ longitute : $("#long").val(),
+
+}
+if (req_data.phone_number != "" && req_data.address != "" && req_data.latitude != "" && req_data.longitute != "")
+{
+  to_proceed = true
+}
+else
+{
+  to_proceed = false
+}
+
+if (to_proceed == true)
+{
+  $.ajax({
+  type: 'POST',
+  dataType:"json",
+  data : JSON.stringify(req_data),
+  url: base_url.base+'profile/',
+  headers:{  
+    "Authorization": "Bearer "+localStorage.getItem("auth_token")
+  },
+  success: function (data, status, xhr) {
+    alert("Profile is updated successfully!")
+    window.location.replace("/profile");
+  },
+
+  error: function(request, status, error) {
+          alert('Please provide valid data!');
+       }
+});
+}
+else
+{
+  alert("All fields are required!")
+}
+
+});
+
+
+
+</script>
+
+
+</html>
