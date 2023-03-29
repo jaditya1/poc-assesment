@@ -3,6 +3,7 @@ from django.conf import settings
 from ninja.security import HttpBearer
 from rest_framework.authentication import TokenAuthentication
 
+
 class NinjaAuthBearer(HttpBearer):
     """Adapter for django-ninja"""
 
@@ -20,4 +21,4 @@ class TokenAuthBearer(TokenAuthentication):
 
 
 def token_auth():
-    return (NinjaAuthBearer())
+    return NinjaAuthBearer()

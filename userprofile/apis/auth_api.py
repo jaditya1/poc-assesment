@@ -6,7 +6,8 @@ from pydantic import constr
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
-
+from ninja.errors import ValidationError
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from .auth_backend import token_auth
 
@@ -21,13 +22,41 @@ class LoginRequest(Schema):
     password: str
 
 
+class RegisterRequest(Schema):
+    first_name: str
+    last_name: str
+    username: constr(to_lower=True)
+    password: str
+    confirm_password: str
+
+
+class RegisterResponse(Schema):
+    message: str
+
+
 class TokenLoginResponse(Schema):
     token: str
 
 
-
 class LogoutResponse(Schema):
     message: str
+
+
+@router.post("/register", response={200: RegisterResponse, 400: dict}, auth=None)
+def register_user(request, payload: RegisterRequest):
+    if User.objects.filter(username=payload.username).exists():
+        raise ValidationError("this username is already registered")
+
+    if payload.password != payload.confirm_password:
+        raise ValidationError("password mismatch")
+    User.objects.create_user(
+        first_name=payload.first_name,
+        last_name=payload.last_name,
+        username=payload.username,
+        password=payload.password,
+    )
+
+    return {"message": "User created successfully"}
 
 
 @router.post("/login_token", response={200: TokenLoginResponse, 400: dict}, auth=None)
@@ -36,6 +65,7 @@ def login_token(request, payload: LoginRequest):
     Required POST parameters: username, password
     For unsuccessful login, an HTTP 400 status code will be returned
     """
+
     serializer = AuthTokenSerializer(data=payload.dict())
     try:
         serializer.is_valid(raise_exception=True)

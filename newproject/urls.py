@@ -18,13 +18,12 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from userprofile.apis.router import api 
+from userprofile.apis.router import api
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('userprofile.urls')),
-
+    path("admin/", admin.site.urls),
+    path("", include("userprofile.urls")),
     path("api/", api.urls),
 ]
 
