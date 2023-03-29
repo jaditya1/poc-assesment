@@ -18,6 +18,7 @@ Apis are integrated with the help of AJAX and django-templating.
 2. Api doc swagger url: `http://localhost:8000/api/docs`
 3. Url to access default admin panel: `http://localhost:8000/admin` 
 4. URl to access custom admin panel:  http://localhost:8000/ 
+5. To run unit test cases for apis run command: `pytest -v`
 
 ### Super admin 
 - username: adi
