@@ -15,7 +15,10 @@ class UserProfileAdmin(admin.ModelAdmin):
 
     # only logged in user can edit his/her profile
     def get_queryset(self, request):
-        return Profile.objects.filter(user=request.user)
+        if request.user.is_superuser == False:
+            return Profile.objects.filter(user=request.user)
+        else:
+            return Profile.objects.all()
 
 
 admin.site.register(Profile, UserProfileAdmin)

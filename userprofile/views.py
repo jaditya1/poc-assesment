@@ -13,3 +13,7 @@ def dashboard(request):
 
 def profile(request):
     return render(request, "profile.html")
+
+
+def map(request):
+    return render(request, "map.html")
