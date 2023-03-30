@@ -17,3 +17,7 @@ def profile(request):
 
 def map(request):
     return render(request, "map.html")
+
+
+def signup(request):
+    return render(request, "signup.html")

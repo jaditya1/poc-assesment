@@ -10,6 +10,8 @@ from ninja.errors import ValidationError
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.models import User
 from .auth_backend import token_auth
+from userprofile.models import UserActivity
+
 
 from ninja import Router
 
@@ -76,11 +78,14 @@ def login_token(request, payload: LoginRequest):
     token, is_created = Token.objects.get_or_create(user=user)
 
     setattr(user, "token", token.key)
+    UserActivity.objects.create(user=user, activity=UserActivity.ActivityStatus.LOGGED_IN)
     return user
 
 
 @router.get("/logout", response={200: LogoutResponse}, auth=token_auth())
 def user_logout(request):
+    user = request.user
     request.user.auth_token.delete()
     logout(request)
+    UserActivity.objects.create(user=user, activity=UserActivity.ActivityStatus.LOGGED_OUT)
     return LogoutResponse(message="Logged out")

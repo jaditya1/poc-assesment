@@ -7,4 +7,6 @@ urlpatterns = [
     path("dashboard", views.dashboard, name="dashboard"),
     path("profile", views.profile, name="profile"),
     path("map", views.map, name="map"),
+    path("signup", views.signup, name="signup"),
+    
 ]

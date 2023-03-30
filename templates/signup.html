@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+    <title>POC</title>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="login-title">Register User</h2>
+      <form class="login-form">
+        <div>
+          <label for="first_name">First Name</label>
+          <input id="first_name" type="text" name="first_name" required />
+        </div>
+
+        <div>
+          <label for="last_name">Last Name</label>
+          <input id="last_name" type="text" name="last_name" required />
+        </div>
+
+        <div>
+          <label for="username">Username </label>
+          <input id="username" type="text" name="username" required />
+        </div>
+
+        <div>
+          <label for="password">Password </label>
+          <input id="password" type="password" name="password" required />
+        </div>
+
+        <div>
+          <label for="confirm_password">Confirm Password</label>
+          <input
+            id="confirm_password"
+            type="password"
+            name="confirm_password"
+            required
+          />
+        </div>
+
+        <button
+          class="btn btn--form"
+          type="button"
+          value="Log in"
+          id="login_btn"
+        >
+          Register
+        </button>
+      </form>
+    </div>
+  </body>
+
+  <!-- login api integration -->
+  <script src="{% static 'js/env.js' %}"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+  <script type="text/javascript">
+     $("#login_btn").click(function(){
+
+    var req_data = {
+     first_name: $("#first_name").val(),
+     last_name: $("#last_name").val(),
+     username : $("#username").val(),
+     password : $("#password").val(),
+     confirm_password: $("#confirm_password").val(),
+    }
+    if (Object.values(req_data).every(val => val !== ""))
+    {
+        if (req_data.password === req_data.confirm_password)
+        {
+            $.ajax({
+                type: 'POST',
+                dataType:"json",
+                data : JSON.stringify(req_data),
+                url: base_url.base+'register',
+                success: function (data, status, xhr) {
+                  window.location.replace("/");
+                },
+    
+                error: function(request, status, error) {
+                        alert('This username is already registered');
+                    }
+              });
+        }
+        else {
+            alert("password and confirm_password should be the same")
+        }
+    }
+    else
+    {
+      alert("Please enter username and password both!!")
+    }
+
+    });
+  </script>
+</html>
